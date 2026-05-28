@@ -1,0 +1,43 @@
+from flask import Flask, request
+import requests
+
+TOKEN = "793913625:awjeRJXicdMEJou685vEEX1H36AISKrBoT0"
+
+app = Flask(__name__)
+
+@app.route("/", methods=["POST"])
+def bot():
+
+    data = request.json
+
+    if "message" in data:
+
+        chat_id = data["message"]["chat"]["id"]
+        text = data["message"]["text"]
+
+        if text == "/start":
+
+            send_message(
+                chat_id,
+                "🛍 خوش اومدی به فروشگاه\n\nبرای دیدن محصولات کلمه محصولات را بفرست"
+            )
+
+        elif text == "محصولات":
+
+            send_message(
+                chat_id,
+                "📦 محصول شماره ۱\n💰 قیمت: ۲۰۰ هزار تومان"
+            )
+
+    return "ok"
+
+def send_message(chat_id, text):
+
+    url = f"https://tapi.bale.ai/bot{TOKEN}/sendMessage"
+
+    requests.post(url, json={
+        "chat_id": chat_id,
+        "text": text
+    })
+
+app.run(host="0.0.0.0", port=5000)
